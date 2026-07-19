@@ -2,9 +2,24 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
 app = FastAPI(
-    title="Task API",
-    description="A simple CRUD API for managing tasks.",
-    version="1.0"
+    title="Task Management API",
+    description="""
+A simple REST API built with FastAPI.
+
+## Features
+- Create a task
+- Read all tasks
+- Read a task by ID
+- Update a task
+- Delete a task
+
+Built for the FlyRank Backend Assignment.
+""",
+    version="1.0.0",
+    contact={
+        "name": "Ahsan Sajjad",
+        "email": "your-email@example.com"
+    }
 )
 
 
@@ -40,7 +55,7 @@ tasks = [
 
 
 # Root endpoint
-@app.get("/")
+@app.get("/", summary="API Information", tags=["General"])
 def root():
     return {
         "name": "Task API",
@@ -52,7 +67,7 @@ def root():
 
 
 # Health endpoint
-@app.get("/health")
+@app.get("/health", summary="Health Check", tags=["General"])
 def health():
     return {
         "status": "ok"
@@ -60,13 +75,13 @@ def health():
 
 
 # Get all tasks
-@app.get("/tasks")
+@app.get("/tasks", summary="Get all tasks", tags=["Tasks"])
 def get_tasks():
     return tasks
 
 
 # Get single task
-@app.get("/tasks/{task_id}")
+@app.get("/tasks/{task_id}", summary="Get task by ID", tags=["Tasks"])
 def get_task(task_id: int):
 
     for task in tasks:
@@ -80,7 +95,7 @@ def get_task(task_id: int):
 
 
 # Create a new task
-@app.post("/tasks", status_code=201)
+@app.post("/tasks", summary="Create a task", tags=["Tasks"], status_code=201)
 def create_task(task: TaskCreate):
 
     if not task.title.strip():
@@ -101,7 +116,7 @@ def create_task(task: TaskCreate):
 
 
 # Update a task
-@app.put("/tasks/{task_id}")
+@app.put("/tasks/{task_id}", summary="Update a task", tags=["Tasks"])
 def update_task(task_id: int, updated_task: TaskUpdate):
 
     for task in tasks:
@@ -126,7 +141,7 @@ def update_task(task_id: int, updated_task: TaskUpdate):
 
 
 # Delete a task
-@app.delete("/tasks/{task_id}", status_code=204)
+@app.delete("/tasks/{task_id}", summary="Delete a task", tags=["Tasks"], status_code=204)
 def delete_task(task_id: int):
 
     for index, task in enumerate(tasks):
